@@ -3,11 +3,13 @@ package com.slp.cookbook.ui;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.slp.cookbook.R;
 import com.slp.cookbook.data.Recipe;
+import com.slp.cookbook.network.NetworkUtils;
 import com.slp.cookbook.network.RecipeAPI;
 import com.slp.cookbook.utils.CookBookConstants;
 
@@ -27,35 +29,19 @@ public class MainActivity extends AppCompatActivity implements CookBookConstants
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        recipes = getRecipes();
+        NetworkUtils.getRecipes(this);
     }
-
-    public List<Recipe> getRecipes() {
-
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .create();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(RECIPES_END_POINT)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-
-        RecipeAPI recipeAPI = retrofit.create(RecipeAPI.class);
-
-        Call<List<Recipe>> recipeList = recipeAPI.getRecipes();
-        recipeList.enqueue(MainActivity.this);
-        return recipes;
-    }
-
 
     @Override
     public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
-        Log.i("Retrofit ", "onResponse: "+response.body());
+        recipes = response.body();
+        for(Recipe recipe : recipes){
+            Log.i("Recipes",recipe.getName());
+        }
     }
 
     @Override
     public void onFailure(Call<List<Recipe>> call, Throwable t) {
-
+        Toast.makeText(this,getString(R.string.failure_message),Toast.LENGTH_LONG).show();
     }
 }
