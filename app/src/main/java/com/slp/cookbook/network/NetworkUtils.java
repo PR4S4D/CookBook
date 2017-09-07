@@ -10,6 +10,8 @@ import com.slp.cookbook.utils.CookBookConstants;
 
 import java.util.List;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
@@ -22,17 +24,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class NetworkUtils implements CookBookConstants {
 
     public static void getRecipes(Context context) {
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .create();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(RECIPES_END_POINT)
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         RecipeAPI recipeAPI = retrofit.create(RecipeAPI.class);
-
         Call<List<Recipe>> recipeList = recipeAPI.getRecipes();
         recipeList.enqueue((Callback<List<Recipe>>) context);
     }

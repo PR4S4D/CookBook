@@ -12,5 +12,6 @@ public interface CookBookConstants {
     String NAME = "name";
     String INGREDIENTS = "ingredients";
     String MEASURE = "measure";
+    String RECIPE = "recipe";
 
 }

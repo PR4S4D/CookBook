@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">CookBook</string>
     <string name="failure_message">Something went wrong!</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="recipe_short_description">Recipe steps number 1</string>
+    <string name="recipe">Recipe</string>
 </resources>

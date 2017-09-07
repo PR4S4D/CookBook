@@ -1,10 +1,13 @@
 package com.slp.cookbook.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Lakshmiprasad on 06-09-2017.
  */
 
-public class Ingredients {
+public class Ingredients implements Parcelable {
 
     private String measure;
     private String ingredient;
@@ -38,4 +41,35 @@ public class Ingredients {
     public String toString() {
         return "ClassPojo [measure = " + measure + ", ingredient = " + ingredient + ", quantity = " + quantity + "]";
     }
+
+    protected Ingredients(Parcel in) {
+        measure = in.readString();
+        ingredient = in.readString();
+        quantity = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(measure);
+        dest.writeString(ingredient);
+        dest.writeString(quantity);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Ingredients> CREATOR = new Parcelable.Creator<Ingredients>() {
+        @Override
+        public Ingredients createFromParcel(Parcel in) {
+            return new Ingredients(in);
+        }
+
+        @Override
+        public Ingredients[] newArray(int size) {
+            return new Ingredients[size];
+        }
+    };
 }

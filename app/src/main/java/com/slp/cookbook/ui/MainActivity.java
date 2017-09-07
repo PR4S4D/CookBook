@@ -1,6 +1,7 @@
 package com.slp.cookbook.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -63,11 +64,14 @@ public class MainActivity extends AppCompatActivity implements CookBookConstants
         setOnItemClickListener(recipeGV);
     }
 
-    private void setOnItemClickListener(GridView recipeGV) {
+    private void setOnItemClickListener(final GridView recipeGV) {
         recipeGV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.i("onItemClick: ", recipes.get(i).getName());
+                Intent intent = new Intent(getApplicationContext(), RecipeActivity.class);
+                intent.putExtra(RECIPE,recipes.get(i));
+                startActivity(intent);
             }
         });
     }

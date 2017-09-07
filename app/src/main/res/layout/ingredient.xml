@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/recipe_card"
     android:layout_width="match_parent"
     android:layout_height="64dp"
-    android:padding="8dp"
     android:elevation="8dp"
-    android:orientation="vertical">
+    android:layout_margin="8dp"
+    android:onClick="showIngredients"
+    tools:showIn="@layout/activity_recipe">
 
     <TextView
-        android:id="@+id/recipe_name"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center|center_vertical"
-        android:textSize="24sp"
-        tools:text="@string/recipe" />
+        android:text="@string/ingredients"
+        android:gravity="center"
+        android:textSize="24sp" />
 
 </android.support.v7.widget.CardView>
