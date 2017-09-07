@@ -13,5 +13,10 @@ public interface CookBookConstants {
     String INGREDIENTS = "ingredients";
     String MEASURE = "measure";
     String RECIPE = "recipe";
+    String RECIPE_STEP = " recipeStep";
+    String TOTAL = "total";
+    String STEPS = "steps";
+    String POSITION = "position";
+    String COOKBOOK = "cookbook";
 
 }
