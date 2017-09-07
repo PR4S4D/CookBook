@@ -58,7 +58,7 @@ public class Steps implements Parcelable {
 
     @Override
     public String toString() {
-        return "ClassPojo [id = " + id + ", shortDescription = " + shortDescription + ", description = " + description + ", videoURL = " + videoURL + ", thumbnailURL = " + thumbnailURL + "]";
+        return "Steps [id = " + id + ", shortDescription = " + shortDescription + ", description = " + description + ", videoURL = " + videoURL + ", thumbnailURL = " + thumbnailURL + "]";
     }
 
     protected Steps(Parcel in) {

@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.slp.cookbook.R;
-import com.slp.cookbook.data.Recipe;
 import com.slp.cookbook.data.Steps;
 
 import java.util.List;
@@ -19,9 +18,15 @@ import java.util.List;
 public class RecipeStepAdapter extends RecyclerView.Adapter<RecipeStepAdapter.ViewHolder> {
 
     private List<Steps> recipeSteps;
+    final private OnItemClickListener itemClickListener;
 
-    public RecipeStepAdapter(List<Steps> steps) {
+    public RecipeStepAdapter(List<Steps> steps, OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
         recipeSteps = steps;
+    }
+
+    public interface OnItemClickListener{
+        void onClick(int position);
     }
 
     @Override
@@ -43,13 +48,20 @@ public class RecipeStepAdapter extends RecyclerView.Adapter<RecipeStepAdapter.Vi
         return 0;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView recipeStepTV;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(final View itemView) {
             super(itemView);
             recipeStepTV = itemView.findViewById(R.id.recipe_step);
+            itemView.setOnClickListener(this);
+        }
+
+
+        @Override
+        public void onClick(View view) {
+            itemClickListener.onClick(getAdapterPosition());
         }
     }
 }

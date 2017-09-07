@@ -39,7 +39,7 @@ public class Ingredients implements Parcelable {
 
     @Override
     public String toString() {
-        return "ClassPojo [measure = " + measure + ", ingredient = " + ingredient + ", quantity = " + quantity + "]";
+        return "Ingredients [measure = " + measure + ", ingredient = " + ingredient + ", quantity = " + quantity + "]";
     }
 
     protected Ingredients(Parcel in) {

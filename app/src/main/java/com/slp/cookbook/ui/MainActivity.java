@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements CookBookConstants
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             LayoutInflater inflator = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View recipeCard = inflator.inflate(R.layout.recipe_card, parent, false);
-            TextView recipeTV = (TextView) recipeCard.findViewById(R.id.recipe_name);
+            TextView recipeTV = recipeCard.findViewById(R.id.recipe_name);
             recipeTV.setText(recipeList.get(position));
             return recipeCard;
         }
