@@ -65,6 +65,12 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
     private MediaSessionCompat mediaSessionCompat;
     private PlaybackStateCompat.Builder stateBuilder;
 
+    private Boolean twoPane = false;
+
+    public void setTwoPane(Boolean twoPane) {
+        this.twoPane = twoPane;
+    }
+
     public void setSteps(List<Steps> steps) {
         this.steps = steps;
     }
@@ -86,7 +92,8 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
         View rootView = inflater.inflate(R.layout.fragment_step_detail, container, false);
         ButterKnife.bind(this, rootView);
         initializeViews();
-        setNavigationButtonClickListener();
+        if (!twoPane)
+            setNavigationButtonClickListener();
         return rootView;
     }
 
@@ -113,12 +120,15 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
     }
 
     private void initializeViews() {
-        prevStep.setClickable(true);
-        nextStep.setClickable(true);
-        if (position == 0) {
-            prevStep.setClickable(false);
-        } else if (position == (steps.size() - 1)) {
-            nextStep.setClickable(false);
+        if (null != twoPane) {
+
+            prevStep.setClickable(true);
+            nextStep.setClickable(true);
+            if (position == 0) {
+                prevStep.setClickable(false);
+            } else if (position == (steps.size() - 1)) {
+                nextStep.setClickable(false);
+            }
         }
         step = steps.get(position);
         stepDescription.setText(step.getDescription());

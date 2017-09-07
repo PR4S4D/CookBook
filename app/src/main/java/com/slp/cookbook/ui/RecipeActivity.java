@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import com.google.gson.Gson;
 import com.slp.cookbook.R;
@@ -16,22 +17,30 @@ import com.slp.cookbook.utils.CookBookConstants;
 
 import java.util.ArrayList;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class RecipeActivity extends AppCompatActivity implements CookBookConstants, RecipeStepsFragment.OnClickListener {
 
     private Recipe recipe;
     public static final String APPWIDGET_UPDATE = "android.appwidget.action.APPWIDGET_UPDATE";
+    @Bind(R.id.recipe_step_detail_container)
+    FrameLayout recipeStepDetailContainer;
+    private Boolean twoPane = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
+        ButterKnife.bind(this);
         recipe = getIntent().getParcelableExtra(RECIPE);
         setTitle(recipe.getName());
         RecipeStepsFragment recipeStepsFragment = new RecipeStepsFragment();
         recipeStepsFragment.setRecipeSteps(recipe.getSteps());
         getSupportFragmentManager().beginTransaction().add(R.id.recipe_steps, recipeStepsFragment).commit();
         updateSharedPreferences();
+        twoPane = null != recipeStepDetailContainer;
     }
 
     private void updateSharedPreferences() {
@@ -44,18 +53,27 @@ public class RecipeActivity extends AppCompatActivity implements CookBookConstan
         getApplicationContext().sendBroadcast(intent);
     }
 
-    public void showIngredients(View view){
+    public void showIngredients(View view) {
         Intent intent = new Intent(this, IngredientActivity.class);
-        intent.putExtra(RECIPE,recipe);
+        intent.putExtra(RECIPE, recipe);
         startActivity(intent);
 
     }
 
     @Override
     public void onClick(int position) {
-        Intent intent = new Intent(this, StepDetailActivity.class);
-        intent.putParcelableArrayListExtra(STEPS, (ArrayList<? extends Parcelable>) recipe.getSteps());
-        intent.putExtra(POSITION, position);
-        startActivity(intent);
+        if(twoPane){
+            StepDetailFragment stepDetailFragment = new StepDetailFragment();
+            stepDetailFragment.setPosition(position);
+            stepDetailFragment.setSteps(recipe.getSteps());
+            stepDetailFragment.setTwoPane(true);
+            getSupportFragmentManager().beginTransaction().replace(R.id.recipe_step_detail_container, stepDetailFragment).commit();
+        }else{
+
+            Intent intent = new Intent(this, StepDetailActivity.class);
+            intent.putParcelableArrayListExtra(STEPS, (ArrayList<? extends Parcelable>) recipe.getSteps());
+            intent.putExtra(POSITION, position);
+            startActivity(intent);
+        }
     }
 }
