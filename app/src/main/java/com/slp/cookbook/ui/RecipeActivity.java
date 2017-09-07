@@ -18,6 +18,8 @@ import java.util.ArrayList;
 public class RecipeActivity extends AppCompatActivity implements CookBookConstants, RecipeStepsFragment.OnClickListener {
 
     private Recipe recipe;
+    public static final String APPWIDGET_UPDATE = "android.appwidget.action.APPWIDGET_UPDATE";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,9 @@ public class RecipeActivity extends AppCompatActivity implements CookBookConstan
         SharedPreferences.Editor prefEditor = getSharedPreferences(COOKBOOK, MODE_PRIVATE).edit();
         prefEditor.putString(RECIPE, gson.toJson(recipe));
         prefEditor.commit();
+
+        Intent intent = new Intent(APPWIDGET_UPDATE).setPackage(getPackageName());
+        getApplicationContext().sendBroadcast(intent);
     }
 
     public void showIngredients() {

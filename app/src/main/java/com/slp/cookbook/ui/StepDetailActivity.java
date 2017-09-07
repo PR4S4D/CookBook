@@ -1,9 +1,12 @@
 package com.slp.cookbook.ui;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 
+import com.google.gson.Gson;
 import com.slp.cookbook.R;
 import com.slp.cookbook.data.Steps;
 import com.slp.cookbook.utils.CookBookConstants;
@@ -22,7 +25,6 @@ public class StepDetailActivity extends AppCompatActivity implements CookBookCon
         StepDetailFragment stepDetailFragment = new StepDetailFragment();
         stepDetailFragment.setPosition(getIntent().getExtras().getInt(POSITION));
         stepDetailFragment.setSteps(steps);
-
         getSupportFragmentManager().beginTransaction().add(R.id.recipe_detail_container, stepDetailFragment).commit();
     }
 
