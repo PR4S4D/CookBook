@@ -1,5 +1,6 @@
 package com.slp.cookbook.utils;
 
+import com.slp.cookbook.data.Ingredients;
 import com.slp.cookbook.data.Recipe;
 
 import java.util.ArrayList;
@@ -18,6 +19,14 @@ public class RecipeUtils {
             recipeNames.add(recipe.getName());
 
         return recipeNames;
+    }
+
+    public static List<String> getIngredients(List<Ingredients> ingredients){
+        List<String> ingredientList = new ArrayList<>();
+        for(Ingredients ingredient : ingredients){
+            ingredientList.add(ingredient.getQuantity()+ " " +ingredient.getMeasure()+ " "+ ingredient.getIngredient());
+        }
+        return ingredientList;
     }
 
 }

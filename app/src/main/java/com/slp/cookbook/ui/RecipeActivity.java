@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.google.gson.Gson;
 import com.slp.cookbook.R;
@@ -43,7 +44,10 @@ public class RecipeActivity extends AppCompatActivity implements CookBookConstan
         getApplicationContext().sendBroadcast(intent);
     }
 
-    public void showIngredients() {
+    public void showIngredients(View view){
+        Intent intent = new Intent(this, IngredientActivity.class);
+        intent.putExtra(RECIPE,recipe);
+        startActivity(intent);
 
     }
 
