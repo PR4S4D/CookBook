@@ -57,9 +57,14 @@ public class RecipeActivity extends AppCompatActivity implements CookBookConstan
     }
 
     public void showIngredients(View view) {
-        Intent intent = new Intent(this, IngredientActivity.class);
-        intent.putExtra(RECIPE, recipe);
-        startActivity(intent);
+        if(twoPane){
+            getSupportFragmentManager().beginTransaction().replace(R.id.recipe_step_detail_container, new IngredientFragment()).commit();
+        }else {
+            Intent intent = new Intent(this, IngredientActivity.class);
+            intent.putExtra(RECIPE, recipe);
+            startActivity(intent);
+        }
+
 
     }
 
