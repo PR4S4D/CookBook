@@ -1,13 +1,15 @@
 package com.slp.cookbook.ui;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.LayoutRes;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.wifi.WifiManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,17 +18,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.GridView;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.slp.cookbook.R;
 import com.slp.cookbook.data.Recipe;
 import com.slp.cookbook.network.NetworkUtils;
-import com.slp.cookbook.network.RecipeAPI;
 import com.slp.cookbook.utils.CookBookConstants;
 import com.slp.cookbook.utils.RecipeUtils;
 
@@ -37,14 +34,15 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements CookBookConstants, Callback<List<Recipe>> {
 
     private List<Recipe> recipes;
     @Bind(R.id.progress_bar_layout)
     FrameLayout progress_bar_layout;
+
+    private NetworkReceiver networkReceiver;
+    private boolean isNetworkReceiverRegistered;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements CookBookConstants
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.i("onItemClick: ", recipes.get(i).getName());
                 Intent intent = new Intent(getApplicationContext(), RecipeActivity.class);
-                intent.putExtra(RECIPE,recipes.get(i));
+                intent.putExtra(RECIPE, recipes.get(i));
                 startActivity(intent);
             }
         });
@@ -109,6 +107,44 @@ public class MainActivity extends AppCompatActivity implements CookBookConstants
             TextView recipeTV = recipeCard.findViewById(R.id.recipe_name);
             recipeTV.setText(recipeList.get(position));
             return recipeCard;
+        }
+    }
+
+    public class NetworkReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (NetworkUtils.isNetworkAvailable(context)) {
+                if (null == recipes) {
+                    progress_bar_layout.setVisibility(View.VISIBLE);
+                    NetworkUtils.getRecipes(MainActivity.this);
+                }
+
+            }
+        }
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!isNetworkReceiverRegistered) {
+            if (null == networkReceiver)
+                networkReceiver = new NetworkReceiver();
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+            filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+            registerReceiver(networkReceiver, filter);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (isNetworkReceiverRegistered) {
+            unregisterReceiver(networkReceiver);
+            isNetworkReceiverRegistered = false;
+            networkReceiver = null;
         }
     }
 }

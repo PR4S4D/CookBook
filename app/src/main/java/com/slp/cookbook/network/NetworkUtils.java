@@ -1,6 +1,8 @@
 package com.slp.cookbook.network;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -33,6 +35,12 @@ public class NetworkUtils implements CookBookConstants {
         RecipeAPI recipeAPI = retrofit.create(RecipeAPI.class);
         Call<List<Recipe>> recipeList = recipeAPI.getRecipes();
         recipeList.enqueue((Callback<List<Recipe>>) context);
+    }
+
+    public static Boolean isNetworkAvailable(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
+        return activeNetworkInfo!=null && activeNetworkInfo.isConnected();
     }
 
 }

@@ -3,6 +3,7 @@
     package="com.slp.cookbook">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -33,6 +34,9 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/recipe_steps_widget_info" />
+        </receiver>
+
+        <receiver android:name=".ui.MainActivity$NetworkReceiver">
         </receiver>
 
         <activity android:name=".ui.IngredientActivity"></activity>

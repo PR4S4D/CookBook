@@ -24,23 +24,31 @@ public class RecipeActivity extends AppCompatActivity implements CookBookConstan
 
     private Recipe recipe;
     public static final String APPWIDGET_UPDATE = "android.appwidget.action.APPWIDGET_UPDATE";
-    @Bind(R.id.recipe_step_detail_container)
-    FrameLayout recipeStepDetailContainer;
+
+    private FrameLayout recipeStepDetailContainer;
     private Boolean twoPane = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
-        ButterKnife.bind(this);
+        recipeStepDetailContainer = (FrameLayout) findViewById(R.id.recipe_step_detail_container);
         recipe = getIntent().getParcelableExtra(RECIPE);
         setTitle(recipe.getName());
+        updateSharedPreferences();
+        twoPane = null != recipeStepDetailContainer;
+        if (savedInstanceState == null)
+            initializeFragment();
+
+
+    }
+
+    private void initializeFragment() {
         RecipeStepsFragment recipeStepsFragment = new RecipeStepsFragment();
         recipeStepsFragment.setRecipeSteps(recipe.getSteps());
         getSupportFragmentManager().beginTransaction().add(R.id.recipe_steps, recipeStepsFragment).commit();
-        updateSharedPreferences();
-        twoPane = null != recipeStepDetailContainer;
     }
 
     private void updateSharedPreferences() {
@@ -62,13 +70,13 @@ public class RecipeActivity extends AppCompatActivity implements CookBookConstan
 
     @Override
     public void onClick(int position) {
-        if(twoPane){
+        if (twoPane) {
             StepDetailFragment stepDetailFragment = new StepDetailFragment();
             stepDetailFragment.setPosition(position);
             stepDetailFragment.setSteps(recipe.getSteps());
             stepDetailFragment.setTwoPane(true);
             getSupportFragmentManager().beginTransaction().replace(R.id.recipe_step_detail_container, stepDetailFragment).commit();
-        }else{
+        } else {
 
             Intent intent = new Intent(this, StepDetailActivity.class);
             intent.putParcelableArrayListExtra(STEPS, (ArrayList<? extends Parcelable>) recipe.getSteps());

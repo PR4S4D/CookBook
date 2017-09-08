@@ -3,6 +3,7 @@ package com.slp.cookbook.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +16,9 @@ import com.slp.cookbook.Adapter.RecipeStepAdapter;
 import com.slp.cookbook.R;
 import com.slp.cookbook.data.Recipe;
 import com.slp.cookbook.data.Steps;
+import com.slp.cookbook.utils.CookBookConstants;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -24,7 +27,7 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RecipeStepsFragment extends Fragment implements RecipeStepAdapter.OnItemClickListener {
+public class RecipeStepsFragment extends Fragment implements RecipeStepAdapter.OnItemClickListener, CookBookConstants {
 
     private List<Steps> recipeSteps;
     private RecyclerView recipeStepsRV;
@@ -57,6 +60,9 @@ public class RecipeStepsFragment extends Fragment implements RecipeStepAdapter.O
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recipe_steps, container, false);
+        if(savedInstanceState != null){
+            recipeSteps = savedInstanceState.getParcelableArrayList(STEPS);
+        }
         if (null != recipeSteps && recipeSteps.size() > 0) {
             recipeStepsRV = rootView.findViewById(R.id.recipe_steps_rv);
             recipeStepsRV.setAdapter(new RecipeStepAdapter(recipeSteps,this));
@@ -70,5 +76,11 @@ public class RecipeStepsFragment extends Fragment implements RecipeStepAdapter.O
     @Override
     public void onClick(int position) {
         clickListener.onClick(position);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(STEPS, (ArrayList<? extends Parcelable>) recipeSteps);
     }
 }
