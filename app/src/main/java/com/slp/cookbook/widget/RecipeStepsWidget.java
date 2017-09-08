@@ -6,12 +6,9 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.widget.RemoteViews;
 
-import com.google.gson.Gson;
 import com.slp.cookbook.R;
-import com.slp.cookbook.data.Recipe;
 import com.slp.cookbook.ui.MainActivity;
 import com.slp.cookbook.ui.RecipeActivity;
 import com.slp.cookbook.utils.CookBookConstants;

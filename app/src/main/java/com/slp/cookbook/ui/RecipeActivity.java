@@ -2,23 +2,18 @@ package com.slp.cookbook.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
 import com.google.gson.Gson;
 import com.slp.cookbook.R;
 import com.slp.cookbook.data.Recipe;
-import com.slp.cookbook.data.Steps;
 import com.slp.cookbook.utils.CookBookConstants;
 
 import java.util.ArrayList;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
 
 public class RecipeActivity extends AppCompatActivity implements CookBookConstants, RecipeStepsFragment.OnClickListener {
 
@@ -74,7 +69,7 @@ public class RecipeActivity extends AppCompatActivity implements CookBookConstan
             StepDetailFragment stepDetailFragment = new StepDetailFragment();
             stepDetailFragment.setPosition(position);
             stepDetailFragment.setSteps(recipe.getSteps());
-            stepDetailFragment.setTwoPane(true);
+
             getSupportFragmentManager().beginTransaction().replace(R.id.recipe_step_detail_container, stepDetailFragment).commit();
         } else {
 

@@ -24,7 +24,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.RecipeActivity" />
-        <activity android:name=".ui.StepDetailActivity" />
+        <activity android:name=".ui.StepDetailActivity"
+            android:theme="@style/RecipeStepDetailTheme"/>
 
         <receiver android:name=".widget.RecipeStepsWidget">
             <intent-filter>
@@ -36,8 +37,7 @@
                 android:resource="@xml/recipe_steps_widget_info" />
         </receiver>
 
-        <receiver android:name=".ui.MainActivity$NetworkReceiver">
-        </receiver>
+        <receiver android:name=".ui.MainActivity$NetworkReceiver"></receiver>
 
         <activity android:name=".ui.IngredientActivity"></activity>
     </application>

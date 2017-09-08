@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id="@+id/recipe_widget"
+    android:background="@color/cardview_light_background"
     android:padding="@dimen/widget_margin">
 
     <LinearLayout
@@ -36,8 +37,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="No Recipe to show!"
-        android:textSize="32dp"
+        android:textColor="@android:color/black"
+        android:text="@string/no_recipe_to_show"
+        android:textSize="24dp"
         android:visibility="invisible" />
 
 </LinearLayout>

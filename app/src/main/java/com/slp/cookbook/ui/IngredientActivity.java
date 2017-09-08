@@ -1,8 +1,7 @@
 package com.slp.cookbook.ui;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.ListViewCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -20,6 +19,7 @@ public class IngredientActivity extends AppCompatActivity implements CookBookCon
 
     @Bind(R.id.ingredients)
     ListView ingredients;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +27,7 @@ public class IngredientActivity extends AppCompatActivity implements CookBookCon
         ButterKnife.bind(this);
         recipe = getIntent().getParcelableExtra(RECIPE);
         setTitle(recipe.getName());
-        ingredients.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, RecipeUtils.getIngredients(recipe.getIngredients())));
+        ingredients.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RecipeUtils.getIngredients(recipe.getIngredients())));
 
     }
 }

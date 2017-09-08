@@ -3,8 +3,6 @@ package com.slp.cookbook.network;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 
 /**
  * Created by Lakshmiprasad on 08-09-2017.

@@ -1,7 +1,5 @@
 package com.slp.cookbook.network;
 
-import android.support.v4.media.session.MediaSessionCompat;
-
 import com.slp.cookbook.data.Recipe;
 
 import java.util.List;

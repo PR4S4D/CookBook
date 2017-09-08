@@ -3,8 +3,6 @@ package com.slp.cookbook.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.lang.reflect.ParameterizedType;
-
 /**
  * Created by Lakshmiprasad on 06-09-2017.
  */

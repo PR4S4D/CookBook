@@ -11,4 +11,8 @@
     <string name="next">NEXT</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="repeat_toggle">repeat toggle</string>
+    <string name="play">play</string>
+    <string name="pause">pause</string>
+    <string name="no_recipe_to_show">No Recipe to show!</string>
 </resources>

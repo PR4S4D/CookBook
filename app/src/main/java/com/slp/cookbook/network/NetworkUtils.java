@@ -4,16 +4,11 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.slp.cookbook.data.Recipe;
-import com.slp.cookbook.ui.MainActivity;
 import com.slp.cookbook.utils.CookBookConstants;
 
 import java.util.List;
 
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;

@@ -1,13 +1,14 @@
 package com.slp.cookbook.ui;
 
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.ExoPlaybackException;
-import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
@@ -41,6 +41,7 @@ import com.slp.cookbook.R;
 import com.slp.cookbook.data.Steps;
 import com.slp.cookbook.utils.CookBookConstants;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -61,21 +62,15 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
     TextView stepDescription;
     private Steps step;
     private List<Steps> steps;
-    private Integer position;
+    private int position;
     private MediaSessionCompat mediaSessionCompat;
     private PlaybackStateCompat.Builder stateBuilder;
-
-    private Boolean twoPane = false;
-
-    public void setTwoPane(Boolean twoPane) {
-        this.twoPane = twoPane;
-    }
 
     public void setSteps(List<Steps> steps) {
         this.steps = steps;
     }
 
-    public void setPosition(Integer position) {
+    public void setPosition(int position) {
         this.position = position;
     }
 
@@ -91,9 +86,15 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_step_detail, container, false);
         ButterKnife.bind(this, rootView);
+        if (null != savedInstanceState) {
+
+            steps = savedInstanceState.getParcelableArrayList(STEPS);
+            position = savedInstanceState.getInt(POSITION);
+        }
+
         initializeViews();
-        if (!twoPane)
-            setNavigationButtonClickListener();
+        setNavigationButtonClickListener();
+
         return rootView;
     }
 
@@ -120,19 +121,23 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
     }
 
     private void initializeViews() {
-        if (null != twoPane) {
 
-            prevStep.setClickable(true);
-            nextStep.setClickable(true);
-            if (position == 0) {
-                prevStep.setClickable(false);
-            } else if (position == (steps.size() - 1)) {
-                nextStep.setClickable(false);
-            }
+        prevStep.setClickable(true);
+        nextStep.setClickable(true);
+        if (position == 0) {
+            prevStep.setClickable(false);
+        } else if (position == (steps.size() - 1)) {
+            nextStep.setClickable(false);
         }
         step = steps.get(position);
         stepDescription.setText(step.getDescription());
-        initiateVideoPlayer(Uri.parse(step.getVideoURL()));
+        if (null != player) {
+            releasePlayer();
+        }
+        if (!TextUtils.isEmpty(step.getVideoURL())) {
+
+            initiateVideoPlayer(Uri.parse(step.getVideoURL()));
+        }
     }
 
     // ref: https://google.github.io/ExoPlayer/guide.html#preparing-the-player
@@ -142,10 +147,14 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
 
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
+        if (null != player) {
+            releasePlayer();
+        }
         TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
-
         player = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector);
+
         videoPlayerView.setPlayer(player);
+
 
         DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getActivity(),
                 Util.getUserAgent(getActivity(), COOKBOOK), null);
@@ -154,6 +163,7 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
                 dataSourceFactory, extractorsFactory, null, null);
         player.prepare(videoSource);
         player.setPlayWhenReady(true);
+
         initialeMediaSession();
 
     }
@@ -238,9 +248,21 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
     }
 
     private void releasePlayer() {
-        player.stop();
-        player.release();
-        player = null;
+        if (null != player) {
+            player.stop();
+            player.release();
+            player = null;
+            videoPlayerView.setPlayer(null);
+            mediaSessionCompat.setActive(false);
+        }
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(STEPS, (ArrayList<? extends Parcelable>) steps);
+        outState.putInt(POSITION, position);
     }
 
 

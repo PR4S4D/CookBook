@@ -15,26 +15,18 @@
         android:paddingTop="4dp"
         android:orientation="horizontal">
 
-<!--        <ImageButton android:id="@id/exo_prev"
-            style="@style/ExoMediaButton.Previous"/>
-
-        <ImageButton android:id="@id/exo_rew"
-            style="@style/ExoMediaButton.Rewind"/>-->
-
         <ImageButton android:id="@id/exo_repeat_toggle"
+            android:contentDescription="@string/repeat_toggle"
             style="@style/ExoMediaButton"/>
 
         <ImageButton android:id="@id/exo_play"
+            android:contentDescription="@string/play"
             style="@style/ExoMediaButton.Play"/>
 
         <ImageButton android:id="@id/exo_pause"
+            android:contentDescription="@string/pause"
             style="@style/ExoMediaButton.Pause"/>
-<!--
-        <ImageButton android:id="@id/exo_ffwd"
-            style="@style/ExoMediaButton.FastForward"/>
 
-        <ImageButton android:id="@id/exo_next"
-            style="@style/ExoMediaButton.Next"/>-->
 
     </LinearLayout>
 
