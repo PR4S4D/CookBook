@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -40,6 +41,7 @@ import com.google.android.exoplayer2.util.Util;
 import com.slp.cookbook.R;
 import com.slp.cookbook.data.Steps;
 import com.slp.cookbook.utils.CookBookConstants;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +62,9 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
     Button prevStep;
     @Bind(R.id.step_description)
     TextView stepDescription;
+    @Bind(R.id.recipe_step_image)
+    ImageView recipeStepImage;
+
     private Steps step;
     private List<Steps> steps;
     private int position;
@@ -137,6 +142,13 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
         if (!TextUtils.isEmpty(step.getVideoURL())) {
 
             initiateVideoPlayer(Uri.parse(step.getVideoURL()));
+        }
+
+        if(TextUtils.isEmpty(step.getThumbnailURL())){
+            Picasso.with(getActivity()).load(R.drawable.cookbook).into(recipeStepImage);
+        }else{
+            Picasso.with(getActivity()).load(step.getThumbnailURL()).error(R.drawable.cookbook).into(recipeStepImage);
+
         }
     }
 
