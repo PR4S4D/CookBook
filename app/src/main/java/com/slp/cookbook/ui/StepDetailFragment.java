@@ -254,8 +254,8 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onPause() {
+        super.onPause();
         releasePlayer();
     }
 
