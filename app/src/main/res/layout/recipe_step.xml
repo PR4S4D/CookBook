@@ -5,17 +5,29 @@
     android:id="@+id/recipe_card"
     android:layout_width="match_parent"
     android:layout_height="64dp"
+    android:layout_margin="8dp"
     android:orientation="vertical"
-    android:padding="8dp"
     app:cardBackgroundColor="@color/cardview_light_background"
     app:elevation="8dp">
+
+
+    <ImageView
+        android:id="@+id/recipe_step_image"
+        android:layout_width="64dp"
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        tools:src="@drawable/cookbook" />
 
     <TextView
         android:id="@+id/recipe_step"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center|center_vertical"
-        android:textSize="24sp"
+        android:layout_marginLeft="64dp"
+        android:layout_marginStart="64dp"
+        android:gravity="center"
+        android:textSize="18sp"
         tools:text="@string/recipe_short_description" />
 
 </android.support.v7.widget.CardView>
+
+

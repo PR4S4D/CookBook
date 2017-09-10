@@ -6,9 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="64dp"
     android:orientation="vertical"
-    android:padding="8dp"
+    android:layout_margin="4dp"
     app:elevation="8dp">
 
+    <ImageView
+        tools:src="@drawable/cookbook"
+        android:id="@+id/recipe_image"
+        android:layout_width="64dp"
+        android:layout_height="match_parent"
+        android:padding="8dp"/>
+    
     <TextView
         android:id="@+id/recipe_name"
         android:layout_width="match_parent"

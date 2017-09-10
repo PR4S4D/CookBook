@@ -8,6 +8,9 @@
 
     <include layout="@layout/progress_bar_layout" />
 
-    <include layout="@layout/recipe_grid" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recipe_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </android.support.constraint.ConstraintLayout>

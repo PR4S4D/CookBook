@@ -10,6 +10,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +24,8 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.slp.cookbook.Adapter.RecipeAdapter;
+import com.slp.cookbook.Adapter.RecipeAdapter.RecipeOnClickListener;
 import com.slp.cookbook.R;
 import com.slp.cookbook.data.Recipe;
 import com.slp.cookbook.network.NetworkUtils;
@@ -35,11 +40,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements CookBookConstants, Callback<List<Recipe>> {
+public class MainActivity extends AppCompatActivity implements CookBookConstants, Callback<List<Recipe>>, RecipeOnClickListener {
 
     private List<Recipe> recipes;
     @Bind(R.id.progress_bar_layout)
     FrameLayout progress_bar_layout;
+    @Bind(R.id.recipe_rv)
+    RecyclerView recipeRV;
 
     private NetworkReceiver networkReceiver;
     private boolean isNetworkReceiverRegistered;
@@ -58,11 +65,16 @@ public class MainActivity extends AppCompatActivity implements CookBookConstants
         progress_bar_layout.setVisibility(View.INVISIBLE);
 
         recipes = response.body();
-        GridView recipeGV = (GridView) findViewById(R.id.recipes);
+        /*GridView recipeGV = (GridView) findViewById(R.id.recipes);
         recipeGV.setAdapter(new RecipeAdapter(this, RecipeUtils.getRecipeNames(recipes)));
-        setOnItemClickListener(recipeGV);
+        setOnItemClickListener(recipeGV);*/
+        recipeRV.setAdapter(new RecipeAdapter(recipes,this));
+        recipeRV.setLayoutManager(new GridLayoutManager(this,getResources().getInteger(R.integer.recipe_column_count)));
+        recipeRV.setHasFixedSize(false);
+
     }
 
+    @Deprecated
     private void setOnItemClickListener(final GridView recipeGV) {
         recipeGV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -81,34 +93,14 @@ public class MainActivity extends AppCompatActivity implements CookBookConstants
         Toast.makeText(this, getString(R.string.failure_message), Toast.LENGTH_LONG).show();
     }
 
-    private class RecipeAdapter extends ArrayAdapter<String> {
-        final private Context context;
-        final private List<String> recipeList;
-
-        public RecipeAdapter(Context context, List<String> recipes) {
-            super(context, -1, recipes);
-            this.context = context;
-            recipeList = recipes;
-        }
-
-        @Override
-        public int getCount() {
-            if (null != recipeList)
-                return recipeList.size();
-
-            return 0;
-        }
-
-        @NonNull
-        @Override
-        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            LayoutInflater inflator = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View recipeCard = inflator.inflate(R.layout.recipe_card, parent, false);
-            TextView recipeTV = recipeCard.findViewById(R.id.recipe_name);
-            recipeTV.setText(recipeList.get(position));
-            return recipeCard;
-        }
+    @Override
+    public void onClick(int position) {
+        Log.i("onItemClick: ", recipes.get(position).getName());
+        Intent intent = new Intent(getApplicationContext(), RecipeActivity.class);
+        intent.putExtra(RECIPE, recipes.get(position));
+        startActivity(intent);
     }
+
 
     public class NetworkReceiver extends BroadcastReceiver {
         @Override
