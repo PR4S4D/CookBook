@@ -1,5 +1,7 @@
 package com.slp.cookbook.utils;
 
+import android.support.annotation.NonNull;
+
 import com.slp.cookbook.data.Ingredients;
 import com.slp.cookbook.data.Recipe;
 
@@ -23,9 +25,14 @@ public class RecipeUtils {
     public static List<String> getIngredients(List<Ingredients> ingredients){
         List<String> ingredientList = new ArrayList<>();
         for(Ingredients ingredient : ingredients){
-            ingredientList.add(ingredient.getQuantity()+ " " +ingredient.getMeasure()+ " "+ ingredient.getIngredient());
+            ingredientList.add(getIngredient(ingredient));
         }
         return ingredientList;
+    }
+
+    @NonNull
+    public static String getIngredient(Ingredients ingredient) {
+        return ingredient.getQuantity()+ " " +ingredient.getMeasure()+ " "+ ingredient.getIngredient();
     }
 
 }

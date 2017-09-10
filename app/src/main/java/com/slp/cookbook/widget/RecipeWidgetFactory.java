@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.slp.cookbook.R;
 import com.slp.cookbook.data.Recipe;
 import com.slp.cookbook.utils.CookBookConstants;
+import com.slp.cookbook.utils.RecipeUtils;
 
 
 /**
@@ -46,17 +47,13 @@ public class RecipeWidgetFactory implements RemoteViewsService.RemoteViewsFactor
 
     @Override
     public int getCount() {
-
-
-        if (null != recipe)
-            return recipe.getSteps().size();
-        return 0;
+        return null != recipe ? recipe.getIngredients().size() : 0;
     }
 
     @Override
     public RemoteViews getViewAt(int i) {
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_recipe_item);
-        remoteViews.setTextViewText(R.id.recipe_step_widget, recipe.getSteps().get(i).getShortDescription());
+        remoteViews.setTextViewText(R.id.recipe_step_widget, RecipeUtils.getIngredient(recipe.getIngredients().get(i)));
         return remoteViews;
     }
 
