@@ -33,7 +33,7 @@ public class RecipeActivity extends AppCompatActivity implements CookBookConstan
         recipe = getIntent().getParcelableExtra(RECIPE);
         setTitle(recipe.getName());
         updateSharedPreferences();
-        twoPane = null != recipeStepDetailContainer;
+        twoPane = getResources().getBoolean(R.bool.isTablet);
         if (savedInstanceState == null)
             initializeFragment();
 
@@ -50,7 +50,7 @@ public class RecipeActivity extends AppCompatActivity implements CookBookConstan
         Gson gson = new Gson();
         SharedPreferences.Editor prefEditor = getSharedPreferences(COOKBOOK, MODE_PRIVATE).edit();
         prefEditor.putString(RECIPE, gson.toJson(recipe));
-        prefEditor.commit();
+        prefEditor.apply();
 
         Intent intent = new Intent(APPWIDGET_UPDATE).setPackage(getPackageName());
         getApplicationContext().sendBroadcast(intent);
