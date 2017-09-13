@@ -18,5 +18,6 @@ public interface CookBookConstants {
     String STEPS = "steps";
     String POSITION = "position";
     String COOKBOOK = "cookbook";
+    String CURRENT_POSTION = "currentPosition";
 
 }

@@ -1,6 +1,7 @@
 package com.slp.cookbook.ui;
 
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -64,6 +65,7 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
     TextView stepDescription;
     @Bind(R.id.recipe_step_image)
     ImageView recipeStepImage;
+    private static long currentPosition;
 
     private Steps step;
     private List<Steps> steps;
@@ -85,6 +87,11 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
     public StepDetailFragment() {
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        player = null;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -256,7 +263,39 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
     @Override
     public void onPause() {
         super.onPause();
+        pausePlayer();
+    }
+
+    private void pausePlayer() {
+        if(null != player){
+            player.setPlayWhenReady(false);
+
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        resumePlayer();
+    }
+
+    private void resumePlayer() {
+        if(player!=null){
+            player.seekTo(currentPosition);
+            player.setPlayWhenReady(true);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
         releasePlayer();
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     private void releasePlayer() {
@@ -275,6 +314,9 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(STEPS, (ArrayList<? extends Parcelable>) steps);
         outState.putInt(POSITION, position);
+        if(null != player){
+            currentPosition = player.getCurrentPosition();
+        }
     }
 
 
