@@ -3,10 +3,12 @@ package com.slp.cookbook;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.assertion.ViewAssertions;
+import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
+import static org.hamcrest.Matchers.allOf;
 
 import com.slp.cookbook.network.NetworkUtils;
 import com.slp.cookbook.ui.MainActivity;
@@ -28,9 +30,8 @@ public class MainActivityTest {
     public void recipeClickTest() {
         if (NetworkUtils.isNetworkAvailable(activityTestRule.getActivity())) {
 
-            Espresso.onView(ViewMatchers.withId(R.id.recipes)).perform(ViewActions.click());
-            Espresso.onView(ViewMatchers.withId(R.id.recipe_steps_rv)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())
-            );
+            Espresso.onView(allOf(ViewMatchers.withId(R.id.recipe_rv))).perform(RecyclerViewActions.actionOnItemAtPosition(1, ViewActions.click()));
+                    Espresso.onView(ViewMatchers.withId(R.id.recipe_steps_rv)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
         } else {
             Log.i("recipeClickTest: ", "no network");
         }
