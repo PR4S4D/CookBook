@@ -23,9 +23,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.RecipeActivity" />
-        <activity android:name=".ui.StepDetailActivity"
-            android:theme="@style/RecipeStepDetailTheme"/>
+        <activity
+            android:name=".ui.RecipeActivity"
+            android:parentActivityName=".ui.MainActivity" />
+        <activity
+            android:name=".ui.StepDetailActivity"
+            android:parentActivityName=".ui.StepDetailActivity"
+            android:theme="@style/RecipeStepDetailTheme" />
 
         <receiver android:name=".widget.RecipeStepsWidget">
             <intent-filter>
@@ -39,7 +43,9 @@
 
         <receiver android:name=".ui.MainActivity$NetworkReceiver"></receiver>
 
-        <activity android:name=".ui.IngredientActivity"></activity>
+        <activity
+            android:name=".ui.IngredientActivity"
+            android:parentActivityName=".ui.RecipeActivity"></activity>
     </application>
 
 </manifest>
