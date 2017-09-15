@@ -17,7 +17,7 @@ public class StepDetailActivity extends AppCompatActivity implements CookBookCon
         setContentView(R.layout.activity_step_detail);
         List<Steps> steps = getIntent().getParcelableArrayListExtra(STEPS);
         if (null == savedInstanceState) {
-
+            StepDetailFragment.currentPosition = 0;
             StepDetailFragment stepDetailFragment = new StepDetailFragment();
             stepDetailFragment.setPosition(getIntent().getExtras().getInt(POSITION));
             stepDetailFragment.setSteps(steps);

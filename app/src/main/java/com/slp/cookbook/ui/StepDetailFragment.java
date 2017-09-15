@@ -65,7 +65,7 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
     TextView stepDescription;
     @Bind(R.id.recipe_step_image)
     ImageView recipeStepImage;
-    private static long currentPosition;
+    public static long currentPosition;
 
     private Steps step;
     private List<Steps> steps;
@@ -272,6 +272,8 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
 
         }
     }
+
+
 
     @Override
     public void onResume() {
