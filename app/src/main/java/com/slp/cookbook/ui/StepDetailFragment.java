@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.PlaybackParameters;
@@ -65,13 +66,15 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
     TextView stepDescription;
     @Bind(R.id.recipe_step_image)
     ImageView recipeStepImage;
-    public static long currentPosition;
 
     private Steps step;
     private List<Steps> steps;
     private int position;
     private MediaSessionCompat mediaSessionCompat;
     private PlaybackStateCompat.Builder stateBuilder;
+
+    private int resumeWindow;
+    private long resumePosition;
 
     public void setSteps(List<Steps> steps) {
         this.steps = steps;
@@ -99,13 +102,18 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
         View rootView = inflater.inflate(R.layout.fragment_step_detail, container, false);
         ButterKnife.bind(this, rootView);
         if (null != savedInstanceState) {
-
             steps = savedInstanceState.getParcelableArrayList(STEPS);
             position = savedInstanceState.getInt(POSITION);
-        }
+            resumeWindow = savedInstanceState.getInt("resumeWindow");
+            resumePosition = savedInstanceState.getLong(CURRENT_POSTION);
+            initializeViews();
 
-        initializeViews();
+        } else {
+
+            initializeViews();
+        }
         setNavigationButtonClickListener();
+
 
         return rootView;
     }
@@ -114,6 +122,8 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
         nextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                clearResumePosition();
                 if (position != (steps.size() - 1)) {
                     position++;
                     initializeViews();
@@ -124,6 +134,7 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
         prevStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                clearResumePosition();
                 if (position != 0) {
                     position--;
                     initializeViews();
@@ -132,7 +143,8 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
         });
     }
 
-    private void initializeViews() {
+    private void
+    initializeViews() {
 
         prevStep.setClickable(true);
         nextStep.setClickable(true);
@@ -144,16 +156,22 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
         step = steps.get(position);
         stepDescription.setText(step.getDescription());
         if (null != player) {
-            releasePlayer();
+           // releasePlayer();
+
+                player.stop();
+                player.release();
+                player = null;
+            videoPlayerView.setPlayer(player);
+
         }
         if (!TextUtils.isEmpty(step.getVideoURL())) {
 
             initiateVideoPlayer(Uri.parse(step.getVideoURL()));
         }
 
-        if(TextUtils.isEmpty(step.getThumbnailURL())){
+        if (TextUtils.isEmpty(step.getThumbnailURL())) {
             Picasso.with(getActivity()).load(R.drawable.cookbook).into(recipeStepImage);
-        }else{
+        } else {
             Picasso.with(getActivity()).load(step.getThumbnailURL()).error(R.drawable.cookbook).into(recipeStepImage);
 
         }
@@ -162,32 +180,44 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
     // ref: https://google.github.io/ExoPlayer/guide.html#preparing-the-player
     private void initiateVideoPlayer(Uri videoUri) {
 
-        Handler mainHandler = new Handler();
 
-        BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
-        TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
-        if (null != player) {
-            releasePlayer();
+
+        if(TextUtils.isEmpty(step.getVideoURL())){
+            player.stop();
+            player.setPlayWhenReady(false);
+            player = null;
+            videoPlayerView.setPlayer(null);
+        } else{
+            Handler mainHandler = new Handler();
+
+            BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+            TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
+
+            TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
+            player = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector);
+
+            videoPlayerView.setPlayer(player);
+            DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getActivity(),
+                    Util.getUserAgent(getActivity(), COOKBOOK), null);
+            ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
+            MediaSource videoSource = new ExtractorMediaSource(videoUri,
+                    dataSourceFactory, extractorsFactory, null, null);
+            boolean haveResumePosition = resumeWindow != C.INDEX_UNSET;
+            if (haveResumePosition) {
+                player.seekTo(resumeWindow, resumePosition);
+            }
+            player.prepare(videoSource, !haveResumePosition, false);
+
+            //player.prepare(videoSource);
+
+            player.setPlayWhenReady(true);
+
+            initiateMediaSession();
+
         }
-        TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
-        player = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector);
-
-        videoPlayerView.setPlayer(player);
-
-
-        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getActivity(),
-                Util.getUserAgent(getActivity(), COOKBOOK), null);
-        ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-        MediaSource videoSource = new ExtractorMediaSource(videoUri,
-                dataSourceFactory, extractorsFactory, null, null);
-        player.prepare(videoSource);
-        player.setPlayWhenReady(true);
-
-        initialeMediaSession();
-
     }
 
-    private void initialeMediaSession() {
+    private void initiateMediaSession() {
         player.addListener(this);
         mediaSessionCompat = new MediaSessionCompat(getActivity(), COOKBOOK);
         mediaSessionCompat.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
@@ -267,25 +297,23 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
     }
 
     private void pausePlayer() {
-        if(null != player){
+        if (null != player) {
             player.setPlayWhenReady(false);
 
         }
     }
 
 
-
     @Override
     public void onResume() {
         super.onResume();
-        resumePlayer();
+        if (null == player) {
+            initializeViews();
+        }
     }
 
     private void resumePlayer() {
-        if(player!=null){
-            player.seekTo(currentPosition);
-            player.setPlayWhenReady(true);
-        }
+
     }
 
     @Override
@@ -300,26 +328,35 @@ public class StepDetailFragment extends Fragment implements CookBookConstants, P
         super.onDestroy();
     }
 
-    private void releasePlayer() {
-        if (null != player) {
-            player.stop();
-            player.release();
-            player = null;
-            videoPlayerView.setPlayer(null);
-            mediaSessionCompat.setActive(false);
-        }
-
-    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putLong(CURRENT_POSTION, player.getContentPosition());
+        outState.putInt("resumeWindow", player.getCurrentWindowIndex());
         outState.putParcelableArrayList(STEPS, (ArrayList<? extends Parcelable>) steps);
         outState.putInt(POSITION, position);
-        if(null != player){
-            currentPosition = player.getCurrentPosition();
-        }
+
+
     }
 
 
+    private void updateResumePosition() {
+        resumeWindow = player.getCurrentWindowIndex();
+        resumePosition = Math.max(0, player.getContentPosition());
+    }
+
+    private void clearResumePosition() {
+        resumeWindow = C.INDEX_UNSET;
+        resumePosition = C.TIME_UNSET;
+    }
+
+    private void releasePlayer() {
+        if (player != null) {
+            updateResumePosition();
+            player.stop();
+            player.release();
+            player = null;
+        }
+    }
 }
